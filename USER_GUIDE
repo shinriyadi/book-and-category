@@ -1,0 +1,8 @@
+1.buat mysql database baru
+3.ubah pengaturan .env DB_DATABASE di isi dengan database yang tadi di buat DB_USERNAME isi dengan username mysql(biasanya root) DB_PASSWORD isi password mysql(biasanya kosong)
+4.masuk ke terminal mengarah ke folder dan ketik php artisan migrate
+5.di terminal ketik php artisan serve
+6.lihat diterminal ada url server biasanya 127.0.0.1:8000 atau localhost:8000
+7.buka browser dan ketikan url
+8.tambah category
+9.tambah buku
