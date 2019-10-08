@@ -1,26 +1,14 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.app')
+@section('title', 'Book')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Book List</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-
-<body>
+@section('content')    
     <div class="col-md-12 mx-auto mt-4">
         <div class="container">
 
             <form action="" method="post" class="">
                 <div class="form-group row">
                     <input type="text" name="title" id="" class="form-control col-md-1 m-2" placeholder="Judul">
-                    <input type="text" name="description" id="" class="form-control col-md-1 m-2"
-                        placeholder="Deskripsi">
+                    <input type="text" name="description" id="" class="form-control col-md-1 m-2" placeholder="Deskripsi">
                     <input type="text" name="category" id="" class="form-control col-md-1 m-2" placeholder="Kategori">
                     <input type="text" name="keyword" id="" class="form-control col-md-1 m-2" placeholder="Keyword">
                     <input type="text" name="price" id="" class="form-control col-md-1 m-2" placeholder="Harga">
@@ -46,13 +34,13 @@
                 <tbody>
                     @foreach ($books as $v)
                     <tr>
-                        <td><input type="checkbox" name="deleteed[]" id="" value="{{$v->id}}"></td>
+                        <td><input type="checkbox" name="deleted[]" id="multidelete" value="{{$v->id}}"></td>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{$v->title}}</td>
                         <td>{{str_limit($v->description, 100)}}</td>
                         <td>
                             @foreach ($v->categories as $cat)
-                                {{$cat->name}},
+                            {{$cat->name}},
                             @endforeach
                         </td>
                         <td>{{$v->keywords}}</td>
@@ -77,19 +65,47 @@
             </table>
 
             <div class="col-md-12">
-                <a href="{{route('book.create')}}" class="btn btn-info btn-md" >
+                <a href="#" class="btn btn-danger btn-md" id="submitDeleteAll">
+                    Delete yang dipilih
+                </a>
+                <a class="btn btn-info btn-md"
+                    {{ count($categories) == 0  ? 'onclick=getAlert()' : "href=".route('book.create') }}>
                     Tambah Buku
                 </a>
-                <a href="{{route('category.index')}}" class="btn btn-secondary btn-md" data-toggle="modal" data-target="#addModal">
+                <a href="{{route('category.index')}}" class="btn btn-secondary btn-md">
                     Tambah Kategori
                 </a>
             </div>
         </div>
     </div>
+@endsection
 
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    
+@section('cripts')    
+    <script>
+        const getAlert = () => alert('Tidak ada kategori, silahkan tambah kategori terlebih dahulu');
+
+        $('#submitDeleteAll').on('click', function() {
+            var selected = [];
+            $('#multidelete:checked').each(function(i) {
+                selected[i] = $(this).val();
+            })
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: 'GET',
+                url: '/delete-select',
+                data: {data: selected},
+                dataType: 'JSON',
+                success: function(response) {
+                    location.reload();
+                }
+            })
+        });
     </script>
-</body>
-
-</html>
+@endsection

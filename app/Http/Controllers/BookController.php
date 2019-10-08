@@ -16,7 +16,8 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::get();
-        return view('index', compact('books'));
+        $categories = Category::get();
+        return view('index', compact('books', 'categories'));
     }
 
     /**
@@ -113,5 +114,19 @@ class BookController extends Controller
         $book->delete();
 
         return redirect(route('book.index'));
+    }
+
+    public function deleteSelected(Request $request)
+    {
+        // Book::destroy($request->all());
+        $payloads = $request->all();
+        foreach($payloads as $i) {
+            Book::destroy($i);
+        }
+        return response()->json(
+            [
+                'Message' => 'Susccess',
+            ]
+        );
     }
 }

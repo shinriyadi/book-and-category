@@ -17,3 +17,4 @@ Route::get('/', function () {
 
 Route::resource('book', 'BookController');
 Route::resource('category', 'CategoryController');
+Route::get('/delete-select', 'BookController@deleteSelected');
